@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -47,10 +48,21 @@ public class MainActivity extends AppCompatActivity {
         asyncQuery.execute();
         log.logInfo("AsyncTask runnnig");
     }
+
+    /**
+     *
+     */
     private void Layout(){
+        //TableLayout Creation
         TableLayout table = findViewById(R.id.TableLayout);
+        /*-- remove all views from TableLayout --*/
         table.removeAllViews();
         log.logInfo("Table cleared");
+        /*-- Insert Header Row --*/
+        //table.setColumnShrinkable(0, true);
+        //table.setColumnStretchable(0, true);
+        table.addView(headerMeaker());
+        log.logInfo("Header Added");
         if(produtos != null) {
             log.logInfo("produtos not empty");
             for (Produto produto : produtos) {
@@ -60,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     TextView label = new TextView(this);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d to %s created", j, produto.getUtil(j)));
                     label.setText(produto.getUtil(j));
+                    label.setBackgroundResource(R.drawable.border_text_view);
                     row.addView(label);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d added to row", j));
                 }
@@ -75,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
                     TextView label = new TextView(this);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d created",j));
                     label.setText(String.format(Locale.ENGLISH, "Label %d", j));
+                    label.setGravity(Gravity.CENTER);
+                    label.setTextSize(20);
+                    label.setBackgroundResource(R.drawable.border_text_view);
                     row.addView(label);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d added", j));
                 }
@@ -82,6 +98,36 @@ public class MainActivity extends AppCompatActivity {
                 log.logInfo(String.format(Locale.ENGLISH, "row %d added", i));
             }
         }
+    }
+    private int[] size_finder(ArrayList<Produto> produtos) {
+        int id_size = String.valueOf(produtos.get(0).getId()).length();
+        int prod_size = String.valueOf(produtos.get(0).getProduto()).length();
+        int quant_size = String.valueOf(produtos.get(0).getQuantidade()).length();
+        int[] biggers = {id_size, prod_size, quant_size};
+        for (Produto produto : produtos) {
+            for (int i = 0; i < 3; i++) {
+                if (biggers[i] < produto.getUtil(i + 1).length()) {
+                    biggers[i] = produto.getUtil(i + 1).length();
+                }
+            }
+        }
+        return biggers;
+    }
+
+    private TableRow headerMeaker(){
+        TableRow header = new TableRow(this);
+        header.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.MATCH_PARENT));
+        Produto attrs = new Produto();
+        for(int i = 0; i < 3; i++){
+            TextView label = new TextView(this);
+            label.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT));
+            label.setText(String.format(Locale.ENGLISH, "%s", attrs.getAtr(i + 1)));
+            label.setGravity(Gravity.LEFT);
+            label.setTextSize(20);
+            label.setBackgroundResource(R.drawable.border_text_view);
+            header.addView(label);
+        }
+        return header;
     }
     class AsyncQuery extends AsyncTask<Void, Void, Void>{
         ProgressDialog dialog;
@@ -99,17 +145,13 @@ public class MainActivity extends AppCompatActivity {
                 Querys querys = new Querys();
                 log.logInfo("Obj querys created");
                 log.logInfo("Query ready to start");
-                //produtos = querys.Pesquisar();
+                produtos = querys.Pesquisar();
                 log.logInfo("query completed");
-                //NetworkPing np = new NetworkPing();
-                //log.logInfo("Obj np created");
-                //log.logInfo("np ready to start");
-                //np.networkPing(log);
-                //log.logInfo("np completed");
             }
             catch (Exception ex){
                 produtos = null;
                 log.logErro("doInBG erro, produtos is null", ex);
+                log.logInfo(String.format("Class: %s\nCause: %s\nMessage: %s\n", ex.getClass(), ex.getCause(), ex.getMessage()));
             }
             return null;
         }

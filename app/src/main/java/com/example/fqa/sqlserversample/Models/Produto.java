@@ -13,6 +13,9 @@ public class Produto {
         this.produto = produto;
         this.valor = valor;
     }
+    public Produto(){
+        this(0, "", 0, 0);
+    }
 
     public int getId() {
         return id;
@@ -55,6 +58,20 @@ public class Produto {
                 return String.valueOf(quantidade);
             case 4:
                 return String.valueOf(valor);
+            default:
+                throw new IndexOutOfBoundsException("Index fora do Range");
+        }
+    }
+    public String getAtr(int index){
+        switch (index){
+            case 1:
+                return "ID";
+            case 2:
+                return "PRODUTO";
+            case 3:
+                return "QUANTIDADE";
+            case 4:
+                return "VALOR";
             default:
                 throw new IndexOutOfBoundsException("Index fora do Range");
         }
