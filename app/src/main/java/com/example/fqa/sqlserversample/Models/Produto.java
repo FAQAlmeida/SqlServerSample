@@ -69,7 +69,7 @@ public class Produto {
             case 2:
                 return "PRODUTO";
             case 3:
-                return "QUANTIDADE";
+                return "QTDE";
             case 4:
                 return "VALOR";
             default:

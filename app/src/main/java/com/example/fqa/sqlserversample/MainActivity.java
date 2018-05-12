@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         /*-- Insert Header Row --*/
         //table.setColumnShrinkable(0, true);
         //table.setColumnStretchable(0, true);
-        table.addView(headerMeaker());
+        table.addView(headerMeaker(table.getMeasuredWidth()));
         log.logInfo("Header Added");
         if(produtos != null) {
             log.logInfo("produtos not empty");
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     TextView label = new TextView(this);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d created",j));
                     label.setText(String.format(Locale.ENGLISH, "Label %d", j));
-                    label.setGravity(Gravity.CENTER);
+                    label.setGravity(Gravity.START);
                     label.setTextSize(20);
                     label.setBackgroundResource(R.drawable.border_text_view);
                     row.addView(label);
@@ -114,15 +114,25 @@ public class MainActivity extends AppCompatActivity {
         return biggers;
     }
 
-    private TableRow headerMeaker(){
+    private TableRow headerMeaker(int width){
         TableRow header = new TableRow(this);
-        header.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.MATCH_PARENT));
+        header.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
         Produto attrs = new Produto();
         for(int i = 0; i < 3; i++){
             TextView label = new TextView(this);
-            label.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT));
+            switch (i){
+                case 0:
+                    label.setWidth(15*width/100);
+                    break;
+                case 1:
+                    label.setWidth(65*width/100);
+                    break;
+                case 2:
+                    label.setWidth(2*width/10);
+                    break;
+            }
             label.setText(String.format(Locale.ENGLISH, "%s", attrs.getAtr(i + 1)));
-            label.setGravity(Gravity.LEFT);
+            label.setGravity(Gravity.START);
             label.setTextSize(20);
             label.setBackgroundResource(R.drawable.border_text_view);
             header.addView(label);
@@ -142,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
+                //NetworkPing ping = new NetworkPing();
+                //ping.networkPing(log);
                 Querys querys = new Querys();
                 log.logInfo("Obj querys created");
                 log.logInfo("Query ready to start");
