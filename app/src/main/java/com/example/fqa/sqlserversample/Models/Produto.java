@@ -57,7 +57,7 @@ public class Produto {
             case 3:
                 return String.valueOf(quantidade);
             case 4:
-                return String.valueOf(valor);
+                return String.format(Locale.ENGLISH, "R$ %.2f", valor);
             default:
                 throw new IndexOutOfBoundsException("Index fora do Range");
         }

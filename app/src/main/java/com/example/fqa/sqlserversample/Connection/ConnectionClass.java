@@ -12,7 +12,7 @@ public class ConnectionClass {
     private static final String USER = "user=Otavio;";
     private static final String PASSWORD = "password=Otavio@435;";
     private static final String WINAUTH = "integratedSecurity=true;";
-    private static final String PATH = DBPATH+DBNAME+INSTANCE+USER+PASSWORD;
+    private static final String PATH = DBPATH + DBNAME + INSTANCE + USER + PASSWORD;
     public Connection getConnection() throws ClassNotFoundException, SQLException{
         Class.forName(CLASS);
         return DriverManager.getConnection(PATH);

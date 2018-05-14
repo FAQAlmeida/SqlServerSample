@@ -1,6 +1,7 @@
 package com.example.fqa.sqlserversample;
 
 import android.app.ProgressDialog;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fqa.sqlserversample.Models.Produto;
 import com.example.fqa.sqlserversample.Connection.Querys;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      *
      */
-    private void Layout(){
+    private void LayoutPortrait(){
         //TableLayout Creation
         TableLayout table = findViewById(R.id.TableLayout);
         /*-- remove all views from TableLayout --*/
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int j = 1; j < 4; j++) {
                     TextView label = new TextView(this);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d to %s created", j, produto.getUtil(j)));
-                    label.setText(produto.getUtil(j));
+                    label.setText(String.format(" %s", produto.getUtil(j)));
                     label.setBackgroundResource(R.drawable.border_text_view);
                     row.addView(label);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d added to row", j));
@@ -87,7 +89,54 @@ public class MainActivity extends AppCompatActivity {
                 for (int j = 1; j < 4; j++) {
                     TextView label = new TextView(this);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d created",j));
-                    label.setText(String.format(Locale.ENGLISH, "Label %d", j));
+                    label.setText(String.format(Locale.ENGLISH, " Label %d", j));
+                    label.setGravity(Gravity.START);
+                    label.setTextSize(20);
+                    label.setBackgroundResource(R.drawable.border_text_view);
+                    row.addView(label);
+                    log.logInfo(String.format(Locale.ENGLISH, "label %d added", j));
+                }
+                table.addView(row);
+                log.logInfo(String.format(Locale.ENGLISH, "row %d added", i));
+            }
+        }
+    }
+    private void LayoutLandScape(){
+        //TableLayout Creation
+        TableLayout table = findViewById(R.id.TableLayout);
+        /*-- remove all views from TableLayout --*/
+        table.removeAllViews();
+        log.logInfo("Table cleared");
+        /*-- Insert Header Row --*/
+        //table.setColumnShrinkable(0, true);
+        //table.setColumnStretchable(0, true);
+        table.addView(headerMeaker(table.getMeasuredWidth()));
+        log.logInfo("Header Added");
+        if(produtos != null) {
+            log.logInfo("produtos not empty");
+            for (Produto produto : produtos) {
+                TableRow row = new TableRow(this);
+                log.logInfo(String.format("Row to %s created", produto.getProduto()));
+                for (int j = 1; j < 5; j++) {
+                    TextView label = new TextView(this);
+                    log.logInfo(String.format(Locale.ENGLISH, "label %d to %s created", j, produto.getUtil(j)));
+                    label.setText(String.format(" %s", produto.getUtil(j)));
+                    label.setBackgroundResource(R.drawable.border_text_view);
+                    row.addView(label);
+                    log.logInfo(String.format(Locale.ENGLISH, "label %d added to row", j));
+                }
+                table.addView(row);
+                log.logInfo(String.format("Row to %s added", produto.getProduto()));
+            }
+        }else{
+            log.logInfo("produtos is empty");
+            for (int i = 1; i < 4; i++) {
+                TableRow row = new TableRow(this);
+                log.logInfo(String.format(Locale.ENGLISH, "Row %d created",i));
+                for (int j = 1; j < 4; j++) {
+                    TextView label = new TextView(this);
+                    log.logInfo(String.format(Locale.ENGLISH, "label %d created",j));
+                    label.setText(String.format(Locale.ENGLISH, " Label %d", j));
                     label.setGravity(Gravity.START);
                     label.setTextSize(20);
                     label.setBackgroundResource(R.drawable.border_text_view);
@@ -118,24 +167,49 @@ public class MainActivity extends AppCompatActivity {
         TableRow header = new TableRow(this);
         header.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
         Produto attrs = new Produto();
-        for(int i = 0; i < 3; i++){
-            TextView label = new TextView(this);
-            switch (i){
-                case 0:
-                    label.setWidth(15*width/100);
-                    break;
-                case 1:
-                    label.setWidth(65*width/100);
-                    break;
-                case 2:
-                    label.setWidth(2*width/10);
-                    break;
+        if(Configuration.ORIENTATION_PORTRAIT == getResources().getConfiguration().orientation) {
+            for (int i = 0; i < 3; i++) {
+                TextView label = new TextView(this);
+                switch (i) {
+                    case 0:
+                        label.setWidth(15 * width / 100);
+                        break;
+                    case 1:
+                        label.setWidth(65 * width / 100);
+                        break;
+                    case 2:
+                        label.setWidth(2 * width / 10);
+                        break;
+                }
+                label.setText(String.format(Locale.ENGLISH, " %s", attrs.getAtr(i + 1)));
+                label.setGravity(Gravity.START);
+                label.setTextSize(20);
+                label.setBackgroundResource(R.drawable.border_text_view);
+                header.addView(label);
             }
-            label.setText(String.format(Locale.ENGLISH, "%s", attrs.getAtr(i + 1)));
-            label.setGravity(Gravity.START);
-            label.setTextSize(20);
-            label.setBackgroundResource(R.drawable.border_text_view);
-            header.addView(label);
+        }else if(Configuration.ORIENTATION_LANDSCAPE == getResources().getConfiguration().orientation){
+            for (int i = 0; i < 4; i++) {
+                TextView label = new TextView(this);
+                switch (i) {
+                    case 0:
+                        label.setWidth(width / 10);
+                        break;
+                    case 1:
+                        label.setWidth(55 * width / 100);
+                        break;
+                    case 2:
+                        label.setWidth(15 * width / 100);
+                        break;
+                    case 3:
+                        label.setWidth(2 * width / 10);
+                        break;
+                }
+                label.setText(String.format(Locale.ENGLISH, " %s", attrs.getAtr(i + 1)));
+                label.setGravity(Gravity.START);
+                label.setTextSize(20);
+                label.setBackgroundResource(R.drawable.border_text_view);
+                header.addView(label);
+            }
         }
         return header;
     }
@@ -169,7 +243,10 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void voids){
-            Layout();
+            if(Configuration.ORIENTATION_LANDSCAPE == getResources().getConfiguration().orientation)
+                LayoutLandScape();
+            else if(Configuration.ORIENTATION_PORTRAIT == getResources().getConfiguration().orientation)
+                LayoutPortrait();
             log.logInfo("Layout completed");
             dialog.dismiss();
             log.logInfo("Dialog dismiss");
