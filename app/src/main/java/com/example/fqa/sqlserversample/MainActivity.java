@@ -50,11 +50,9 @@ public class MainActivity extends AppCompatActivity {
         asyncQuery.execute();
         log.logInfo("AsyncTask runnnig");
     }
-
-    /**
-     *
-     */
-    private void LayoutPortrait(){
+    private void Layout(int orientation){
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) orientation = 5;
+        else if (orientation == Configuration.ORIENTATION_PORTRAIT) orientation = 4;
         //TableLayout Creation
         TableLayout table = findViewById(R.id.TableLayout);
         /*-- remove all views from TableLayout --*/
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             for (Produto produto : produtos) {
                 TableRow row = new TableRow(this);
                 log.logInfo(String.format("Row to %s created", produto.getProduto()));
-                for (int j = 1; j < 4; j++) {
+                for (int j = 1; j < orientation; j++) {
                     TextView label = new TextView(this);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d to %s created", j, produto.getUtil(j)));
                     label.setText(String.format(" %s", produto.getUtil(j)));
@@ -86,54 +84,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 1; i < 4; i++) {
                 TableRow row = new TableRow(this);
                 log.logInfo(String.format(Locale.ENGLISH, "Row %d created",i));
-                for (int j = 1; j < 4; j++) {
-                    TextView label = new TextView(this);
-                    log.logInfo(String.format(Locale.ENGLISH, "label %d created",j));
-                    label.setText(String.format(Locale.ENGLISH, " Label %d", j));
-                    label.setGravity(Gravity.START);
-                    label.setTextSize(20);
-                    label.setBackgroundResource(R.drawable.border_text_view);
-                    row.addView(label);
-                    log.logInfo(String.format(Locale.ENGLISH, "label %d added", j));
-                }
-                table.addView(row);
-                log.logInfo(String.format(Locale.ENGLISH, "row %d added", i));
-            }
-        }
-    }
-    private void LayoutLandScape(){
-        //TableLayout Creation
-        TableLayout table = findViewById(R.id.TableLayout);
-        /*-- remove all views from TableLayout --*/
-        table.removeAllViews();
-        log.logInfo("Table cleared");
-        /*-- Insert Header Row --*/
-        //table.setColumnShrinkable(0, true);
-        //table.setColumnStretchable(0, true);
-        table.addView(headerMeaker(table.getMeasuredWidth()));
-        log.logInfo("Header Added");
-        if(produtos != null) {
-            log.logInfo("produtos not empty");
-            for (Produto produto : produtos) {
-                TableRow row = new TableRow(this);
-                log.logInfo(String.format("Row to %s created", produto.getProduto()));
-                for (int j = 1; j < 5; j++) {
-                    TextView label = new TextView(this);
-                    log.logInfo(String.format(Locale.ENGLISH, "label %d to %s created", j, produto.getUtil(j)));
-                    label.setText(String.format(" %s", produto.getUtil(j)));
-                    label.setBackgroundResource(R.drawable.border_text_view);
-                    row.addView(label);
-                    log.logInfo(String.format(Locale.ENGLISH, "label %d added to row", j));
-                }
-                table.addView(row);
-                log.logInfo(String.format("Row to %s added", produto.getProduto()));
-            }
-        }else{
-            log.logInfo("produtos is empty");
-            for (int i = 1; i < 4; i++) {
-                TableRow row = new TableRow(this);
-                log.logInfo(String.format(Locale.ENGLISH, "Row %d created",i));
-                for (int j = 1; j < 4; j++) {
+                for (int j = 1; j < orientation; j++) {
                     TextView label = new TextView(this);
                     log.logInfo(String.format(Locale.ENGLISH, "label %d created",j));
                     label.setText(String.format(Locale.ENGLISH, " Label %d", j));
@@ -243,10 +194,7 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void voids){
-            if(Configuration.ORIENTATION_LANDSCAPE == getResources().getConfiguration().orientation)
-                LayoutLandScape();
-            else if(Configuration.ORIENTATION_PORTRAIT == getResources().getConfiguration().orientation)
-                LayoutPortrait();
+            Layout(getResources().getConfiguration().orientation);
             log.logInfo("Layout completed");
             dialog.dismiss();
             log.logInfo("Dialog dismiss");
